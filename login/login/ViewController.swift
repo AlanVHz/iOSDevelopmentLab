@@ -22,8 +22,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var cloudFour: UIImageView!
     @IBOutlet weak var baloon: UIImageView!
     
-    let userLogin:String = "alan"
-    let passwordLogin:String = "admin"
+    let userLogin:String = ""
+    let passwordLogin:String = ""
     let student = Student(name: "Alan", career: "ICO", nameImage: "myImage")
     
     override func viewDidLoad() {
@@ -37,10 +37,10 @@ class ViewController: UIViewController {
         passwordTextField.text = ""
         
         // DESAPARECIENDO A LOS ELEMENTOS
-        /*myLabel.frame.origin.x = view.frame.origin.x - myLabel.frame.size.width
-         userTextField.frame.origin.x = view.frame.origin.x - userTextField.frame.size.width
-         passwordTextField.frame.origin.x = view.frame.origin.x - passwordTextField.frame.size.width
-         loginButtonUI.alpha = 0*/
+        myLabel.frame.origin.x = view.frame.origin.x - myLabel.frame.size.width
+        userTextField.frame.origin.x = view.frame.origin.x - userTextField.frame.size.width
+        passwordTextField.frame.origin.x = view.frame.origin.x - passwordTextField.frame.size.width
+        loginButtonUI.alpha = 0
         baloon.frame.origin.x = view.frame.origin.x - baloon.frame.size.width
         
     }
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
             self.baloon.center.y = self.baloon.center.y - 500
         }, completion: nil)
         
-        /*UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.5) {
             // DENTEO DEL CLOUSURE VA LA ANIMACION
             self.myLabel.center.x = self.view.center.x
         }
@@ -83,7 +83,7 @@ class ViewController: UIViewController {
         
         UIView.animate(withDuration: 0.7, delay: 0.6, options: .curveEaseIn, animations: {
             self.loginButtonUI.alpha = 1.0
-        }, completion: nil)*/
+        }, completion: nil)
     }
     
     func setupUI(){
@@ -114,13 +114,25 @@ class ViewController: UIViewController {
 
     @IBAction func loginButton(_ sender: UIButton) {
         if userTextField.text == userLogin && passwordTextField.text == passwordLogin {
-            if let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "profileVC") as? ProfileViewController {
+            
+            // Instancia segura de un ViewController
+            guard let mainStoryboard = storyboard, let profileCV = mainStoryboard.instantiateViewController(withIdentifier: "profileVC") as? ProfileViewController else { return }
+            profileCV.student = student
+            // Creamos un nuevo navigation controller y usamos como root al profileViewController
+            let navigationController = UINavigationController(rootViewController: profileCV)
+            // Navegamos hacia allà
+            present(navigationController, animated: true, completion: nil)
+            
+            
+            // Esto es lo mismo de arriba pero de manera distinta...
+           /* if let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "profileVC") as? ProfileViewController {
                 nextViewController.student = student
                 // Creamos un nuevo navigation controller y usamos como root al profileViewController
                 let newNavigationController = UINavigationController(rootViewController: nextViewController)
                 // Navegamos hacia allà
                 self.present(newNavigationController, animated: true, completion: nil)
-            }
+            } */
+            
         } else {
             let alert = UIAlertController(title: "¡Ops!", message: "Usuario o Contraseña incorrectos", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Aceptar", style: .default, handler: nil))
